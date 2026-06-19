@@ -50,109 +50,142 @@ export default function FAQ() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  return (
-    <section 
-      id="faq" 
-      ref={sectionRef}
-      className="bg-white py-20 md:py-32 px-4 md:px-8 lg:px-16 w-full relative border-t border-zinc-100"
-    >
-      <div className="mx-auto w-full max-w-[1200px]">
-        
-        {/* ========================================================= */}
-        {/* ASYMMETRIC LAYOUT CONTAINER                               */}
-        {/* ========================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
+return (
+  <section
+    id="faq"
+    ref={sectionRef}
+    className="relative w-full border-t border-zinc-100 bg-white py-20 px-4 md:px-8 lg:px-16 md:py-32"
+  >
+    <div className="mx-auto max-w-[1200px]">
 
-
-                  <div className={cn(
+      {/* ========================= */}
+      {/* Heading */}
+      {/* ========================= */}
+      <div
+        className={cn(
           "mb-16 text-center transition-all duration-1000 ease-out",
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-        )}>
-          <div className="inline-flex items-center gap-2 text-[#F26B1D] bg-[#F26B1D]/10 px-3.5 py-1.5 rounded-full mb-4 border border-[#F26B1D]/20">
-            <Sparkles size={12} className="animate-pulse" />
-            <span className="text-[10px] font-extrabold tracking-widest uppercase">General Inquiry</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-[#421E2C] tracking-tight leading-none">
-            Pahami <span className="text-[#F26B1D]">Setiap Detailnya </span>
-          </h2>
-          <p className="text-zinc-500 font-light text-sm max-w-xl mx-auto mt-4 leading-relaxed">
-            Kami merangkum poin-poin krusial terkait aspek legalitas, lokasi strategis, dan keunggulan sistem tata kelola investasi pasif di The Osborn Living.
-          </p>
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-6 opacity-0"
+        )}
+      >
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#F26B1D]/20 bg-[#F26B1D]/10 px-3.5 py-1.5 text-[#F26B1D]">
+          <Sparkles size={12} className="animate-pulse" />
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em]">
+            General Inquiry
+          </span>
         </div>
 
-          {/* RIGHT COLUMN: REFINED MINIMALIST LINES ACCORDION (8 Columns) */}
-          <div className={cn(
-            "lg:col-span-8 border-t border-zinc-200 transition-all duration-1000 delay-200 ease-out",
-            isVisible ? "opacity-100" : "opacity-0"
-          )}>
-            <div className="divide-y divide-zinc-200">
-              {faqItems.map((item, idx) => {
-                const isOpen = openIndex === idx;
-                return (
-                  <div 
-                    key={idx} 
-                    className="group transition-colors duration-300"
-                  >
-                    {/* Accordion Toggle Header */}
-                    <button
-                      onClick={() => toggleFaq(idx)}
-                      className="w-full flex items-center justify-between py-6 text-left gap-6 cursor-pointer select-none"
-                      aria-expanded={isOpen}
-                    >
-                      <span className={cn(
-                        "text-sm md:text-base font-semibold tracking-wide transition-colors duration-200",
-                        isOpen ? "text-[#F26B1D]" : "text-[#421E2C] group-hover:text-zinc-900"
-                      )}>
-                        {item.question}
-                      </span>
-                      
-                      {/* Minimalist Micro Border Box Arrow */}
-                      <div className={cn(
-                        "w-7 h-7 rounded border border-zinc-200 flex items-center justify-center shrink-0 text-[#421E2C] bg-white transition-all duration-300",
-                        isOpen && "rotate-180 bg-[#421E2C] border-[#421E2C] text-white"
-                      )}>
-                        <ChevronDown size={14} />
-                      </div>
-                    </button>
+        <h2 className="text-3xl font-bold leading-tight tracking-tight text-[#421E2C] md:text-5xl">
+          Pahami{" "}
+          <span className="text-[#F26B1D]">
+            Setiap Detailnya
+          </span>
+        </h2>
 
-                    {/* Expandable Body Panel */}
-                    <div className={cn(
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-zinc-500 md:text-base">
+          Kami merangkum poin-poin krusial terkait legalitas,
+          lokasi strategis, serta sistem pengelolaan investasi
+          pasif di Core Stay Guest House.
+        </p>
+      </div>
+
+      {/* ========================= */}
+      {/* FAQ */}
+      {/* ========================= */}
+      <div
+        className={cn(
+          "mx-auto max-w-4xl transition-all duration-1000 delay-200 ease-out",
+          isVisible ? "opacity-100" : "opacity-0"
+        )}
+      >
+        <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+
+          <div className="divide-y divide-zinc-200">
+            {faqItems.map((item, idx) => {
+              const isOpen = openIndex === idx;
+
+              return (
+                <div
+                  key={idx}
+                  className="group transition-colors duration-300"
+                >
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    aria-expanded={isOpen}
+                    className="flex w-full cursor-pointer items-center justify-between gap-6 px-6 py-6 text-left"
+                  >
+                    <span
+                      className={cn(
+                        "text-sm font-semibold transition-colors duration-200 md:text-base",
+                        isOpen
+                          ? "text-[#F26B1D]"
+                          : "text-[#421E2C] group-hover:text-black"
+                      )}
+                    >
+                      {item.question}
+                    </span>
+
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-200 bg-white transition-all duration-300",
+                        isOpen &&
+                          "rotate-180 border-[#421E2C] bg-[#421E2C] text-white"
+                      )}
+                    >
+                      <ChevronDown size={16} />
+                    </div>
+                  </button>
+
+                  <div
+                    className={cn(
                       "grid transition-all duration-300 ease-in-out",
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    )}>
-                      <div className="overflow-hidden">
-                        <p className="pb-6 text-zinc-500 font-light text-xs md:text-sm leading-relaxed max-w-3xl">
-                          {item.answer}
-                        </p>
-                      </div>
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    )}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="px-6 pb-6 text-sm leading-7 text-zinc-500">
+                        {item.answer}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
 
-            {/* Mobile / Fallback Assistance Bottom Callout */}
-            <div className="mt-8 pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-50/70 p-4 rounded-xl">
-              <div className="flex items-center gap-2.5 text-xs text-zinc-500 text-center sm:text-left">
-                <MessageSquare size={14} className="text-[#F26B1D] shrink-0" />
-                <span>Membutuhkan simulasi perhitungan legalitas atau skema kredit khusus?</span>
+          {/* Bottom CTA */}
+          <div className="border-t border-zinc-200 bg-zinc-50 px-6 py-5">
+            <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+              <div className="flex items-center gap-3 text-center text-sm text-zinc-500 md:text-left">
+                <MessageSquare
+                  size={16}
+                  className="text-[#F26B1D]"
+                />
+                <span>
+                  Membutuhkan simulasi investasi atau
+                  konsultasi langsung dengan tim kami?
+                </span>
               </div>
-              <a 
+
+              <a
                 href="https://wa.me/62816500707"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold text-[#421E2C] hover:text-[#F26B1D] underline tracking-wider uppercase transition-colors whitespace-nowrap shrink-0"
+                className="inline-flex items-center gap-2 rounded-full bg-[#421E2C] px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#F26B1D]"
               >
-                Hubungi Investment Officer
+                Hubungi Sekarang
+                <ArrowRight size={14} />
               </a>
             </div>
-
           </div>
 
         </div>
-
       </div>
-    </section>
-  );
+
+    </div>
+  </section>
+);
 }
