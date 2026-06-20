@@ -248,7 +248,7 @@ export default function PassiveIncome() {
                 </div>
                 <div>
                   <p className="text-[10px] font-black tracking-[0.2em] uppercase text-white/40">
-                    Nett Profit / Tahun
+                    Profit / Tahun
                   </p>
                   <p className="text-[11px] text-white/60 font-light mt-0.5">
                     Akumulasi 12 Bulan — Semua Tier

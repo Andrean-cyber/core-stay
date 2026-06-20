@@ -32,7 +32,7 @@ export default function Pricing() {
     {
       icon: <Coins size={16} className="text-[#F26B1D]" />,
       label: "Estimasi Passive Income / Thn",
-      value: "Rp 255 Juta+",
+      value: "Rp 521 Juta+",
       desc: "Proyeksi bersih melalui manajemen pengelolaan sewa properti khusus"
     },
     {
