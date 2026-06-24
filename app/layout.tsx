@@ -2,22 +2,57 @@ import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Metadata } from "next"
+import type { Metadata } from "next";
 import Navbar from "@/components/sections/Navbar"
 import Footer from "@/components/sections/Footer" // Kita akan buat ini
 import Script from "next/script"
 import { cn } from "@/lib/utils";
 
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "CoreStay - Cluster Guest House",
-  description: "Satu-satunya Cluster Guest House di Malang",
-  icons: {
-    icon: "/icon.ico", // Sesuaikan dengan nama file di folder public
+  metadataBase: new URL("https://corestay.id"),
+
+  title: {
+    default: "CoreStay - Cluster Guest House di Malang",
+    template: "%s | CoreStay",
   },
-  generator: 'v0.dev'
-}
+
+  description:
+    "CoreStay adalah cluster guest house modern di Malang dengan fasilitas lengkap, lokasi strategis, dan lingkungan nyaman.",
+
+  keywords: [
+    "guest house malang",
+    "penginapan malang",
+    "cluster guest house",
+    "corestay",
+    "akomodasi malang",
+  ],
+
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    title: "CoreStay - Cluster Guest House di Malang",
+    description:
+      "Cluster guest house modern di Malang dengan fasilitas lengkap dan lokasi strategis.",
+    url: "https://corestay.id",
+    siteName: "CoreStay",
+    locale: "id_ID",
+    type: "website",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  icons: {
+    icon: "/icon.ico",
+  },
+};
 
 export default function RootLayout({
   children,
