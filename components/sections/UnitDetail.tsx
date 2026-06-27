@@ -17,6 +17,8 @@ import {
   MapPin,
   FileBadge,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -32,7 +34,7 @@ type TabId = (typeof TABS)[number]["id"];
 const CONTENT: Record<
   TabId,
   {
-    image: string;
+    images: string[];
     eyebrow: string;
     heading: string;
     body: string;
@@ -40,7 +42,19 @@ const CONTENT: Record<
   }
 > = {
   spec: {
-    image: "/fasad_depan (1).webp",
+    // Ganti / tambah path foto fasad di sini. Urutan = urutan slide.
+    images: [
+      "/fasad_depan (1).webp",
+      "/int1.webp",
+      "/int2.webp",
+      "/int3.webp",
+      "/int4.webp",
+      "/int5.webp",
+      "/int6.webp",
+      "/int7.webp",
+      "/int8.webp",
+      "/int9.webp",
+    ],
     eyebrow: "Exclusive Guest House",
     heading: "Ruang yang dirancang untuk kebutuhan \nlebih baik di masa mendatang.",
     body: "Lobby/recepsionist dan tempat parkir yang luas, cocok untuk keluarga yang menginginkan kenyamanan premium tanpa kompromi.",
@@ -64,7 +78,7 @@ const CONTENT: Record<
     ],
   },
   facility: {
-    image: "/interior (1).webp",
+    images: ["/interior (1).webp"],
     eyebrow: "Fasilitas Internal Premium",
     heading: "Kenyamanan resor\ndari dalam.",
     body: "Setiap fasilitas dipilih untuk menghadirkan pengalaman tinggal setara bintang lima.",
@@ -88,21 +102,25 @@ const PERKS = [
     icon: <MapPin size={15} />,
     label: "Pusat Kota Malang",
     desc: "Hitungan menit ke pusat kota, sekolah, dan rumah sakit",
+    href: "#location",
   },
   {
     icon: <FileText size={15} />,
     label: "Legalitas 100% Aman",
     desc: "Dokumen dan perizinan lengkap, siap transaksi dengan aman",
+    href: "#pricing",
   },
   {
     icon: <Layers2 size={15} />,
     label: "Full Furnished",
     desc: "Interior premium lengkap, siap huni atau langsung menghasilkan pasif income",
+     href: "#explore",
   },
   {
     icon: <FileBadge size={15} />,
     label: "Support Management",
     desc: "Dikelola oleh tim profesional, optimalkan keuntungan tanpa repot mengurus operasional harian",
+    href: "#investasi",
   },
 ];
 
@@ -114,6 +132,11 @@ export default function UnitDetail() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // ── Carousel state ──
+  const [slideIndex, setSlideIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -130,6 +153,51 @@ export default function UnitDetail() {
   }, [hasAnimated]);
 
   const content = CONTENT[activeTab];
+  const images = content.images;
+
+  // Reset carousel setiap kali tab berganti
+  useEffect(() => {
+    setSlideIndex(0);
+  }, [activeTab]);
+
+  const goToSlide = (idx: number) => {
+    const total = images.length;
+    const next = ((idx % total) + total) % total; // wrap-around aman
+    setSlideIndex(next);
+  };
+
+  const goPrev = () => goToSlide(slideIndex - 1);
+  const goNext = () => goToSlide(slideIndex + 1);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 40; // px minimum swipe untuk dianggap geser
+    if (touchDeltaX.current > threshold) {
+      goPrev();
+    } else if (touchDeltaX.current < -threshold) {
+      goNext();
+    }
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
+
+  // Smooth-scroll ke section lain (mis. "location") tanpa reload
+  const handlePerkClick = (href?: string) => {
+    if (!href) return;
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <section
@@ -188,20 +256,36 @@ export default function UnitDetail() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             )}
           >
-            {/* Main image */}
-            <div className="relative h-[380px] md:h-[560px] w-full rounded-3xl overflow-hidden">
-              <Image
-                src={content.image}
-                alt={content.eyebrow}
-                fill
-                className="object-cover transition-transform duration-700 ease-out hover:scale-[1.03]"
-                priority
-              />
+            {/* Main image / carousel */}
+            <div
+              className="relative h-[380px] md:h-[560px] w-full rounded-3xl overflow-hidden group/carousel"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {/* Slides track */}
+              <div
+                className="absolute inset-0 flex h-full transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${slideIndex * 100}%)` }}
+              >
+                {images.map((src, i) => (
+                  <div key={src} className="relative h-full w-full shrink-0 basis-full">
+                    <Image
+                      src={src}
+                      alt={`${content.eyebrow} - foto ${i + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={i === 0}
+                    />
+                  </div>
+                ))}
+              </div>
+
               {/* gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#421E2C]/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#421E2C]/60 via-transparent to-transparent pointer-events-none" />
 
               {/* Vertical rotated label — signature element */}
-              <div className="absolute top-6 left-0 -translate-x-0">
+              <div className="absolute top-6 left-0 -translate-x-0 z-10">
                 <div className="bg-[#F26B1D] px-3 py-2 rounded-r-xl">
                   <span
                     className="block text-[9px] font-black tracking-[0.3em] uppercase text-white"
@@ -212,8 +296,50 @@ export default function UnitDetail() {
                 </div>
               </div>
 
+              {/* Prev / Next arrows — hanya tampil jika lebih dari 1 foto */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    aria-label="Foto sebelumnya"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-colors duration-300 cursor-pointer"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    aria-label="Foto berikutnya"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-colors duration-300 cursor-pointer"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </>
+              )}
+
+              {/* Dots indicator */}
+              {images.length > 1 && (
+                <div className="absolute top-5 right-5 z-10 flex items-center gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => goToSlide(i)}
+                      aria-label={`Ke foto ${i + 1}`}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
+                        i === slideIndex
+                          ? "w-5 bg-[#F26B1D]"
+                          : "w-1.5 bg-white/50 hover:bg-white/80"
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+
               {/* Bottom floating stat strip */}
-              <div className="absolute bottom-0 left-0 right-0 p-5">
+              <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                 <div className="flex gap-3">
                   {[
                     { val: "108", unit: "m²", label: "Luas Tanah" },
@@ -244,24 +370,48 @@ export default function UnitDetail() {
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               )}
             >
-              {PERKS.map((p, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 bg-[#FBF8F6] border border-[#421E2C]/8 rounded-2xl px-3.5 py-3 hover:border-[#F26B1D]/30 transition-colors duration-300 group"
-                >
-                  <div className="shrink-0 w-7 h-7 rounded-xl bg-[#F26B1D]/10 flex items-center justify-center text-[#F26B1D] group-hover:bg-[#F26B1D] group-hover:text-white transition-colors duration-300">
-                    {p.icon}
+              {PERKS.map((p, i) => {
+                const isClickable = Boolean(p.href);
+                return (
+                  <div
+                    key={i}
+                    role={isClickable ? "button" : undefined}
+                    tabIndex={isClickable ? 0 : undefined}
+                    onClick={isClickable ? () => handlePerkClick(p.href) : undefined}
+                    onKeyDown={
+                      isClickable
+                        ? (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handlePerkClick(p.href);
+                            }
+                          }
+                        : undefined
+                    }
+                    className={cn(
+                      "flex items-center gap-3 bg-[#FBF8F6] border border-[#421E2C]/8 rounded-2xl px-3.5 py-3 hover:border-[#F26B1D]/30 transition-colors duration-300 group",
+                      isClickable && "cursor-pointer"
+                    )}
+                  >
+                    <div className="shrink-0 w-7 h-7 rounded-xl bg-[#F26B1D]/10 flex items-center justify-center text-[#F26B1D] group-hover:bg-[#F26B1D] group-hover:text-white transition-colors duration-300">
+                      {p.icon}
+                    </div>
+                    <div className="min-w-0">
+                      <p
+                        className={cn(
+                          "text-[11px] font-bold text-[#421E2C] leading-tight truncate",
+                          isClickable && "group-hover:text-[#F26B1D] transition-colors duration-300"
+                        )}
+                      >
+                        {p.label}
+                      </p>
+                      <p className="text-[9px] text-zinc-400 leading-tight mt-0.5 truncate">
+                        {p.desc}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-bold text-[#421E2C] leading-tight truncate">
-                      {p.label}
-                    </p>
-                    <p className="text-[9px] text-zinc-400 leading-tight mt-0.5 truncate">
-                      {p.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
