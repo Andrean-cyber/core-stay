@@ -43,7 +43,7 @@ const CONTENT: Record<
     image: "/fasad_depan (1).webp",
     eyebrow: "Exclusive Guest House",
     heading: "Ruang yang dirancang untuk kebutuhan \nlebih baik di masa mendatang.",
-    body: "Tata ruang dua lantai plus rooftop yang lapang, cocok untuk keluarga yang menginginkan kenyamanan premium tanpa kompromi.",
+    body: "Lobby/recepsionist dan tempat parkir yang luas, cocok untuk keluarga yang menginginkan kenyamanan premium tanpa kompromi.",
     rows: [
       { icon: <Maximize2 size={16} />, label: "Luas Tanah", value: "108 m²" },
       {
